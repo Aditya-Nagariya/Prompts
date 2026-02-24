@@ -1,3 +1,5 @@
+# **ENGINEERING STANDARDS**
+
 *Maintaining Large Codebases — The Concrete Playbook*
 
 *Every rule in this document is concrete, actionable, and non-negotiable.*
@@ -40,17 +42,17 @@
 
 Every file related to a feature lives in one folder. When you work on Users, you open one folder — not six.
 
-| **❌  BAD /src  /models    user.model.js    order.model.js  /controllers    user.controller.js    order.controller.js  /services    user.service.js    order.service.js** | **✅  GOOD /src  /users    user.model.js    user.service.js    user.controller.js    user.exceptions.js    user.test.js  /orders    order.model.js    order.service.js    order.controller.js** |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ❌  BAD /src  /models    user.model.js    order.model.js  /controllers    user.controller.js    order.controller.js  /services    user.service.js    order.service.js | ✅  GOOD /src  /users    user.model.js    user.service.js    user.controller.js    user.exceptions.js    user.test.js  /orders    order.model.js    order.service.js    order.controller.js |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 
 ## **File Size Limits — Hard Rules**
 
-| **File Type**       | **Hard Limit** | **Action if Exceeded**             |
-| ------------------- | -------------- | ---------------------------------- |
-| Any source file     | \> 400 lines   | Split into sub-modules             |
-| Any function/method | \> 40 lines    | Extract to named helper            |
-| Any class           | \> 300 lines   | Apply SRP, split by responsibility |
-| Main/entry file     | \> 80 lines    | Move logic to dedicated modules    |
+| File Type           | Hard Limit   | Action if Exceeded                 |
+| ------------------- | ------------ | ---------------------------------- |
+| Any source file     | \> 400 lines | Split into sub-modules             |
+| Any function/method | \> 40 lines  | Extract to named helper            |
+| Any class           | \> 300 lines | Apply SRP, split by responsibility |
+| Main/entry file     | \> 80 lines  | Move logic to dedicated modules    |
 
 ## **File Naming Convention**
 
@@ -85,8 +87,8 @@ Create a /shared or /common folder for code used across 2+ features. If somethin
 - try/catch blocks for business errors
 - More than one level of nesting
 
-| **❌  BAD # Bad main.pyfrom flask import Flask, requestapp = Flask(__name__)@app.route('/users', methods=['POST'])def create_user():    data = request.get_json()    if not data.get('email'):        return {'error': 'missing email'}, 400    db.execute("INSERT INTO users ...")    send_welcome_email(data['email'])    return {'ok': True}, 201** | **✅  GOOD # Good main.pyfrom app import create_appfrom config import load_configfrom database import init_dbfrom routes import register_routesdef main():    config = load_config()    db = init_db(config)    app = create_app(config)    register_routes(app, db)    app.run(port=config.PORT)if __name__ == "__main__":    main()** |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ❌  BAD # Bad main.pyfrom flask import Flask, requestapp = Flask(__name__)@app.route('/users', methods=['POST'])def create_user():    data = request.get_json()    if not data.get('email'):        return {'error': 'missing email'}, 400    db.execute("INSERT INTO users ...")    send_welcome_email(data['email'])    return {'ok': True}, 201 | ✅  GOOD # Good main.pyfrom app import create_appfrom config import load_configfrom database import init_dbfrom routes import register_routesdef main():    config = load_config()    db = init_db(config)    app = create_app(config)    register_routes(app, db)    app.run(port=config.PORT)if __name__ == "__main__":    main() |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 **RULE:** If you are writing an if statement in main, you are implementing, not bootstrapping. Move it out.
 
@@ -108,7 +110,7 @@ Always initialize in this order to prevent dependency failures at startup:
 
 ## **Naming Rules — No Exceptions**
 
-| **Entity**     | **Convention**               | **Example**                     |
+| Entity         | Convention                   | Example                         |
 | -------------- | ---------------------------- | ------------------------------- |
 | Variable       | Descriptive noun/noun phrase | activeUserCount, not n or cnt   |
 | Function       | Verb + object                | fetchUserById(), not getData()  |
@@ -124,15 +126,15 @@ Always initialize in this order to prevent dependency failures at startup:
 - A function that takes more than 3 parameters needs a parameter object.
 - Avoid flag arguments (true/false params). They signal the function does two things.
 
-| **❌  BAD // takes 6 args, flag param, unclear namefunction process(u, t, true, 0, null, cb) {  // no idea what this does}** | **✅  GOOD // self-documenting, object paramfunction sendPasswordResetEmail({ user, template, expiresInMinutes }) {  // immediately clear}** |
-| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| ❌  BAD // takes 6 args, flag param, unclear namefunction process(u, t, true, 0, null, cb) {  // no idea what this does} | ✅  GOOD // self-documenting, object paramfunction sendPasswordResetEmail({ user, template, expiresInMinutes }) {  // immediately clear} |
+| ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 
 ## **Comment Policy**
 
 Comments explain WHY, never WHAT. If the code needs a comment to explain what it does, rewrite the code until it doesn't.
 
-| **❌  BAD // loop through usersfor (const u of users) {  // check if active  if (u.status === 1) { ... }}** | **✅  GOOD // Throttle is per-user, not per-IP, to prevent// account sharing abuse (see ticket #4421)for (const user of activeUsers) {  applyRateLimit(user);}** |
-| ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ❌  BAD // loop through usersfor (const u of users) {  // check if active  if (u.status === 1) { ... }} | ✅  GOOD // Throttle is per-user, not per-IP, to prevent// account sharing abuse (see ticket #4421)for (const user of activeUsers) {  applyRateLimit(user);} |
+| ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 **RULE:** Delete commented-out code immediately. Git history is your backup, not your source file.
 
@@ -155,8 +157,8 @@ The first time you write logic, write it. The second time you need the same logi
 
 Use inheritance for genuine 'is-a' relationships. Use composition for code reuse. Copying methods across classes because you can't decide is neither — it is duplication with extra steps.
 
-| **❌  BAD class UserService:    def _format_date(self, d):        return d.strftime('%Y-%m-%d')class OrderService:    def _format_date(self, d):  # duplicated!        return d.strftime('%Y-%m-%d')** | **✅  GOOD # shared/date_utils.pydef format_date(d):    return d.strftime('%Y-%m-%d')# user.service.pyfrom shared.date_utils import format_date#** [**order.service.py**](http://order.service.py)**  from shared.date_utils import format_date** |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ❌  BAD class UserService:    def _format_date(self, d):        return d.strftime('%Y-%m-%d')class OrderService:    def _format_date(self, d):  # duplicated!        return d.strftime('%Y-%m-%d') | ✅  GOOD # shared/date_utils.pydef format_date(d):    return d.strftime('%Y-%m-%d')# user.service.pyfrom shared.date_utils import format_date# order.service.py  from shared.date_utils import format_date |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 ## **Template / Base Classes**
 
@@ -176,8 +178,8 @@ class BaseRepository:    def find_by_id(self, id): ...    def find_all(self): ..
 - Never use bare except: in Python. Ever.
 - Always raise domain-specific exceptions, not strings or generic errors.
 
-| **❌  BAD try:    result = fetch_data()except:    pass  # silent death# also bad:try:    process_payment()except Exception:    print("error")  # no context, no re-raise** | **✅  GOOD try:    result = fetch_data()except NetworkTimeoutError as e:    logger.error("Fetch timed out", extra={"url": url, "error": str(e)})    raise ServiceUnavailableError("Upstream timeout") from eexcept ValueError as e:    logger.warning("Invalid response format", extra={"error": str(e)})    raise DataValidationError("Bad upstream data") from e** |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ❌  BAD try:    result = fetch_data()except:    pass  # silent death# also bad:try:    process_payment()except Exception:    print("error")  # no context, no re-raise | ✅  GOOD try:    result = fetch_data()except NetworkTimeoutError as e:    logger.error("Fetch timed out", extra={"url": url, "error": str(e)})    raise ServiceUnavailableError("Upstream timeout") from eexcept ValueError as e:    logger.warning("Invalid response format", extra={"error": str(e)})    raise DataValidationError("Bad upstream data") from e |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 ## **Custom Exception Hierarchy**
 
@@ -187,7 +189,7 @@ Every domain owns its exceptions. Catching generic exceptions across domain boun
 
 ## **Exception Layer Responsibility**
 
-| **Layer**            | **Raises**                       | **Handles**                              |
+| Layer                | Raises                           | Handles                                  |
 | -------------------- | -------------------------------- | ---------------------------------------- |
 | Repository / DAO     | DatabaseException                | Raw DB errors only                       |
 | Service              | Domain exceptions (UserNotFound) | Maps DB → domain exceptions              |
@@ -206,20 +208,20 @@ print() has no level, no structured fields, no timestamps, and cannot be filtere
 
 ## **Log Levels — Exact Usage**
 
-| **Level** | **Use When**                         | **Example**                             |
-| --------- | ------------------------------------ | --------------------------------------- |
-| DEBUG     | Detailed dev-only trace info         | SQL query with params, loop iterations  |
-| INFO      | Normal system events worth recording | User logged in, order created           |
-| WARN      | Something unexpected but recovered   | Retry succeeded after 2 failures        |
-| ERROR     | Operation failed, needs attention    | Payment declined, DB write failed       |
-| CRITICAL  | System integrity threatened          | DB connection pool exhausted, disk full |
+| Level    | Use When                             | Example                                 |
+| -------- | ------------------------------------ | --------------------------------------- |
+| DEBUG    | Detailed dev-only trace info         | SQL query with params, loop iterations  |
+| INFO     | Normal system events worth recording | User logged in, order created           |
+| WARN     | Something unexpected but recovered   | Retry succeeded after 2 failures        |
+| ERROR    | Operation failed, needs attention    | Payment declined, DB write failed       |
+| CRITICAL | System integrity threatened          | DB connection pool exhausted, disk full |
 
 ## **Structured Logging — Required Fields**
 
 Every log entry must carry structured context, not just a string. This allows filtering, alerting, and dashboards.
 
-| **❌  BAD # unstructured - unsearchablelogger.error("Payment failed for user 123")** | **✅  GOOD # structured - filterable, alertablelogger.error(    "Payment processing failed",    extra={        "user_id":** [**user.id**](http://user.id)**,        "order_id":** [**order.id**](http://order.id)**,        "amount_cents": payment.amount,        "gateway": payment.gateway,        "error_code": e.code,        "request_id":** [**request.id**](http://request.id)**  # trace across services    })** |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ❌  BAD # unstructured - unsearchablelogger.error("Payment failed for user 123") | ✅  GOOD # structured - filterable, alertablelogger.error(    "Payment processing failed",    extra={        "user_id": user.id,        "order_id": order.id,        "amount_cents": payment.amount,        "gateway": payment.gateway,        "error_code": e.code,        "request_id": request.id  # trace across services    }) |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 ## **What to Always Log**
 
@@ -246,12 +248,12 @@ Every log entry must carry structured context, not just a string. This allows fi
 
 A class is responsible for exactly one thing. The test: can you describe this class's job in one sentence without using 'and'?
 
-| **❌  BAD class UserManager:    def create_user(self): ...    def send_welcome_email(self): ...    def generate_pdf_report(self): ...    def log_audit_trail(self): ...    # This class has 4 jobs** | **✅  GOOD class UserService:    def create_user(self): ...  # one jobclass EmailService:    def send_welcome_email(self): ...class ReportService:    def generate_user_report(self): ...class AuditLogger:    def log(self, event): ...** |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ❌  BAD class UserManager:    def create_user(self): ...    def send_welcome_email(self): ...    def generate_pdf_report(self): ...    def log_audit_trail(self): ...    # This class has 4 jobs | ✅  GOOD class UserService:    def create_user(self): ...  # one jobclass EmailService:    def send_welcome_email(self): ...class ReportService:    def generate_user_report(self): ...class AuditLogger:    def log(self, event): ... |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 ## **Strict Layer Contracts**
 
-| **Layer**    | **Knows About**               | **Must NOT Know About**          |
+| Layer        | Knows About                   | Must NOT Know About              |
 | ------------ | ----------------------------- | -------------------------------- |
 | Controller   | HTTP req/res, DTOs            | Database queries, business rules |
 | Service      | Domain models, business rules | HTTP, database drivers, SQL      |
@@ -276,11 +278,11 @@ Services should depend on abstractions (interfaces/abstract classes), not concre
 
 ## **Test Pyramid — Ratios**
 
-| **Type**          | **Volume** | **Speed**    | **What It Tests**                  |
-| ----------------- | ---------- | ------------ | ---------------------------------- |
-| Unit tests        | ~70%       | < 1ms each   | Single function/class in isolation |
-| Integration tests | ~20%       | < 500ms each | 2+ components wired together       |
-| End-to-end tests  | ~10%       | Seconds      | Full user flow through system      |
+| Type              | Volume | Speed        | What It Tests                      |
+| ----------------- | ------ | ------------ | ---------------------------------- |
+| Unit tests        | ~70%   | < 1ms each   | Single function/class in isolation |
+| Integration tests | ~20%   | < 500ms each | 2+ components wired together       |
+| End-to-end tests  | ~10%   | Seconds      | Full user flow through system      |
 
 ## **Unit Test Rules**
 
@@ -328,15 +330,15 @@ feat(auth): add OAuth2 login with Googlefix(orders): prevent duplicate charge on
 
 ## **CI Pipeline — Required Gates (in order)**
 
-| **#** | **Gate**             | **Target Time** | **Fails On**                         |
-| ----- | -------------------- | --------------- | ------------------------------------ |
-| 1     | Secret scanning      | < 30s           | Any credential pattern in code       |
-| 2     | Linting + formatting | < 60s           | Any style violation                  |
-| 3     | Unit tests           | < 3 min         | Any failure or < 70% coverage        |
-| 4     | Integration tests    | < 5 min         | Any failure                          |
-| 5     | Security scan (SAST) | < 2 min         | High/critical vulnerabilities        |
-| 6     | Build artifact       | < 3 min         | Build failure                        |
-| 7     | Deploy to staging    | < 5 min         | Health check failure → auto rollback |
+| \# | Gate                 | Target Time | Fails On                             |
+| -- | -------------------- | ----------- | ------------------------------------ |
+| 1  | Secret scanning      | < 30s       | Any credential pattern in code       |
+| 2  | Linting + formatting | < 60s       | Any style violation                  |
+| 3  | Unit tests           | < 3 min     | Any failure or < 70% coverage        |
+| 4  | Integration tests    | < 5 min     | Any failure                          |
+| 5  | Security scan (SAST) | < 2 min     | High/critical vulnerabilities        |
+| 6  | Build artifact       | < 3 min     | Build failure                        |
+| 7  | Deploy to staging    | < 5 min     | Health check failure → auto rollback |
 
 **RULE:** Total CI time target: under 10 minutes. Pipelines that take 30+ minutes get bypassed. Fast feedback is the only kind that gets acted on.
 
@@ -352,8 +354,8 @@ Incomplete features are deployed behind a flag, not on a branch. A flag lets you
 - Config is loaded once at startup into a typed config object. Never call os.getenv() or process.env.X inside business logic.
 - Missing required env vars crash the app at startup with a clear error — not at runtime during a user request.
 
-| **❌  BAD # Bad: scattered env calls in business logicclass PaymentService:    def charge(self, amount):        key = os.getenv("STRIPE_KEY")  # could be None!        url = "**[**https://hardcoded-stripe.com**](https://hardcoded-stripe.com)**"** | **✅  GOOD # Good: config loaded once, validated at startup# config.pyclass Config:    STRIPE_KEY: str = os.getenv("STRIPE_KEY")    STRIPE_URL: str = os.getenv("STRIPE_URL")        def validate(self):        if not self.STRIPE_KEY:            raise RuntimeError("STRIPE_KEY is required")#** [**payment.service.py**](http://payment.service.py)**  class PaymentService:    def __init__(self, config: Config):        self.stripe_key = config.STRIPE_KEY** |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ❌  BAD # Bad: scattered env calls in business logicclass PaymentService:    def charge(self, amount):        key = os.getenv("STRIPE_KEY")  # could be None!        url = "https://hardcoded-stripe.com" | ✅  GOOD # Good: config loaded once, validated at startup# config.pyclass Config:    STRIPE_KEY: str = os.getenv("STRIPE_KEY")    STRIPE_URL: str = os.getenv("STRIPE_URL")        def validate(self):        if not self.STRIPE_KEY:            raise RuntimeError("STRIPE_KEY is required")# payment.service.py  class PaymentService:    def __init__(self, config: Config):        self.stripe_key = config.STRIPE_KEY |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 ## **Dependency Management**
 
@@ -418,7 +420,7 @@ Leave every file you touch slightly better than you found it. Fix one bad variab
 
 ## **Observability — The Three Pillars**
 
-| **Pillar**          | **Tool Examples**               | **What It Tells You**                  |
+| Pillar              | Tool Examples                   | What It Tells You                      |
 | ------------------- | ------------------------------- | -------------------------------------- |
 | Structured Logs     | ELK, Datadog, CloudWatch        | What happened and in what context      |
 | Metrics             | Prometheus, Datadog, CloudWatch | How the system is performing over time |
@@ -450,3 +452,5 @@ Every engineer should be able to run the full stack locally in under 5 minutes u
 *A mediocre convention applied uniformly across an entire team beats a perfect convention applied sporadically by the best engineer. At scale, predictability and consistency are the most valuable features a codebase can have.*
 
 **Write code for the engineer who comes after you — at 2am, during an incident, under pressure.**
+
+?descriptionFromFileType=function+toLocaleUpperCase()+{+[native+code]+}+File&mimeType=application/octet-stream&fileName=ENGINEERING+STANDARDS.md&fileType=undefined&fileExtension=md
