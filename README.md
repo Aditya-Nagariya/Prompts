@@ -59,7 +59,7 @@ A single source of truth that solves "scattered prompts." Every prompt here is d
 
 ### 1. Ultimate AI Pair Programmer
 
-**File:** `ultimate_prompt.md`
+**File:** `ai-pair-programmer-ultimate.md`
 
 #### What It Does
 This is the most comprehensive agentic coding prompt in the library, synthesized from 25+ production AI tools (Cursor, Windsurf, Claude Code, Devin, Copilot, and more). It transforms any capable LLM into a fully autonomous senior software engineer that plans, executes, verifies, and self-corrects — without being asked to.
@@ -121,7 +121,7 @@ Fix it.
 
 ### 2. AI Pair Programmer (Core)
 
-**File:** `Your_Ai_Pair_Progammer`
+**File:** `ai-pair-programmer.md`
 
 #### What It Does
 A focused, production-grade coding partner built around three core pillars: intelligent exploration before acting, surgical code changes that don't corrupt files, and quality gates that catch regressions before you do. Lighter than the Ultimate version but still highly capable.
@@ -178,7 +178,7 @@ Reply **"proceed"** or **"yes"** to begin execution.
 
 ### 3. Code Restructuring Engineer
 
-**File:** `code_restructureng.md`
+**File:** `code-restructuring-engineer.md`
 
 #### What It Does
 A ruthless Senior Staff Engineer persona that enforces Feature-Based Architecture, the Main File Contract, bulletproof exception handling, structured logging, DRY principles, and clean OOP layering. Use this when you have a working but messy codebase that needs production-grade hardening.
@@ -247,7 +247,7 @@ def create_user():
 
 ### 4. Inference & Local AI Optimizer (Markdown)
 
-**File:** `Optimizing_Open_Source_AI_TO Run_On_Local_Hardware.md`
+**File:** `local-inference-optimizer.md`
 
 #### What It Does
 An Elite AI Systems Architect specialized in making open-source LLMs run efficiently on local or constrained hardware. Focuses on two core technologies: **NVIDIA Dynamo** for KV Cache offloading and **Axon** for graph-powered code intelligence.
@@ -319,7 +319,7 @@ Design an Axon indexing pipeline."
 
 ### 5. Inference & Local AI Optimizer (XML)
 
-**File:** `Optimizing_Open_Source_Ai_Inference_Claude_Specific`
+**File:** `local-inference-optimizer-claude.md`
 
 #### What It Does
 Functionally identical to Prompt #4 but structured in Claude-native XML format. This version has more precise instruction parsing, better tool-use reliability, and stronger safety architecture (Instruction Sandboxing, Identity Grounding). **Use this version when deploying on Claude.**
@@ -360,7 +360,7 @@ Same hardware/software context as Prompt #4. Additionally:
 
 ### 6. Precision Technical Execution Engine (Nexus)
 
-**File:** `Advance_Prompt_Engineer_Persona_Adpation`
+**File:** `nexus-technical-execution-engine.md`
 
 #### What It Does
 "Nexus" is an expert-level technical reasoning system for AI/ML development and offensive security engineering. It provides surgically precise answers with zero ambiguity, methodical problem decomposition, and complete technical honesty. This prompt is built for skilled professionals who don't need hand-holding.
@@ -432,7 +432,7 @@ Phase 5: Deliverable
 
 ### 7. Universal Prompt Engineer
 
-**File:** `Prompt_Engineer`
+**File:** `universal-prompt-engineer.md`
 
 #### What It Does
 A meta-prompt that teaches you prompt engineering while doing it for you. It operates simultaneously as an executor (builds the prompt), teacher (explains the decisions), and consultant (recommends optimizations). Use this to create, analyze, or improve prompts for any AI model.
@@ -514,7 +514,7 @@ Your task
 
 ### 8. Image Generation Architect (Nano Banana Pro)
 
-**File:** `Enhance_Your_Image_Generation_Prompt`
+**File:** `image-prompt-architect.md`
 
 #### What It Does
 Transforms short, vague image ideas into detailed, technically precise prompts optimized for photorealistic AI image generation. The philosophy is **Synthetic Authenticity** — moving away from "AI perfection" toward "captured reality" with intentional imperfections, physics-accurate lighting, and real camera optics.
@@ -590,7 +590,7 @@ reads as authentic rather than digital noise.
 
 ### 9. Engineering Standards Reference
 
-**File:** `enginerring_standards`
+**File:** `engineering-standards-reference.md`
 
 #### What It Is
 This is not a prompt — it is a **team engineering standards document** formatted as a reference guide. It defines concrete, actionable rules for maintaining large codebases across 13 domains.
@@ -669,22 +669,22 @@ Everyone is encouraged to share their prompts.
 
 ```text
 /
-├── README.md                                          ← You are here
+├── README.md                                    ← You are here
 ├── /development
-│   ├── ultimate_prompt.md                             ← Ultimate AI Pair Programmer
-│   ├── Your_Ai_Pair_Progammer                         ← AI Pair Programmer (Core)
-│   ├── code_restructureng.md                          ← Code Restructuring Engineer
-│   ├── Optimizing_Open_Source_AI_TO_Run_On_Local.md   ← Inference Optimizer (Markdown)
-│   ├── Optimizing_Open_Source_Ai_Inference_Claude     ← Inference Optimizer (XML/Claude)
-│   └── Advance_Prompt_Engineer_Persona_Adpation       ← Nexus Technical Engine
+│   ├── ai-pair-programmer.md                    ← AI Pair Programmer (Core)
+│   ├── ai-pair-programmer-ultimate.md           ← Ultimate AI Pair Programmer
+│   ├── code-restructuring-engineer.md           ← Code Restructuring Engineer
+│   ├── local-inference-optimizer.md             ← Inference Optimizer (Markdown / any model)
+│   ├── local-inference-optimizer-claude.md      ← Inference Optimizer (XML / Claude-native)
+│   └── nexus-technical-execution-engine.md      ← Nexus Technical Engine
 ├── /meta
-│   └── Prompt_Engineer                                ← Universal Prompt Engineer
+│   └── universal-prompt-engineer.md             ← Universal Prompt Engineer
 ├── /creative
-│   └── Enhance_Your_Image_Generation_Prompt           ← Image Generation Architect
+│   └── image-prompt-architect.md                ← Image Generation Architect
 ├── /standards
-│   └── enginerring_standards                          ← Engineering Standards Reference
+│   └── engineering-standards-reference.md       ← Engineering Standards Reference
 └── /templates
-    └── Template.md                                    ← Blank prompt structure for contributions
+    └── Template.md                              ← Blank prompt structure for contributions
 ```
 
 ---
